@@ -1,0 +1,37 @@
+<html>
+  <body>
+    <form id="auth-form" method="post">
+      <div>
+        User Name:
+        <input
+          id="username"
+          placeholder="Enter UserName"
+          type="text"
+          required
+        />
+      </div>
+      <span id="for-signup">
+        Role:
+        <select id="my-select">
+          <!-- <option>............</option> -->
+        </select>
+        <br />
+        Email:<input id="email" type="email" placeholder="Enter Email" />
+      </span>
+      Password:
+      <input
+        id="password"
+        type="password"
+        placeholder="Enter Password"
+        required
+      />
+      <br />
+      <input id="register" type="Submit" value="Login" />
+    </form>
+    <button onclick="onSwitch()" id="switch">Switch to SignUp</button>
+
+    <p id="response"></p>
+
+    <script src="/loginOrSignUp.js"></script>
+  </body>
+</html>
