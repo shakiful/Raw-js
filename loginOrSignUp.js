@@ -78,7 +78,7 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
 
         localStorage.setItem("accessToken", token);
 
-        window.location.href = "./weather.html";
+        window.location.assign ("./weather.html");
         alert("Successfully logged in");
       } else {
         alert(data.message);
@@ -98,5 +98,32 @@ function onSwitch() {
     document.getElementById("for-signup").style.display = "none";
     document.getElementById("switch").innerHTML = "Switch to SignUp";
     document.getElementById("register").value = "Login";
+  }
+}
+
+// Auto Login
+let redirectedFlag = false;
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (isLoggedIn()) {
+    window.location.assign ("./weather.html");
+    console.log(redirectedFlag);
+  } else {
+    // User is not logged in, perform actions for unauthenticated users
+    if (!redirectedFlag) {
+      console.log(redirectedFlag);
+      console.log("User is not logged in.");
+      redirectedFlag = true;
+      console.log(redirectedFlag);
+      // window.location.assign ("./index.html");
+    }
+  }
+});
+
+//Auto Login Function
+function isLoggedIn() {
+  if (localStorage.getItem("accessToken")) {
+    window.location.assign ("./weather.html");
+    return true;
   }
 }
