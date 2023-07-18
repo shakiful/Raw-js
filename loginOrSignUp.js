@@ -35,25 +35,24 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
       alert("Ensure you input a value in both fields!");
     } else {
       // perform operation with form input
-      const formData = {
+      const signUpData = {
         username: username.value,
         password: password.value,
         email: email.value,
         role: role.value,
       };
-      alert("This form has been successfully submitted!");
 
       let response = document.getElementById("response");
 
       const res = await fetch("http://localhost:3000/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(signUpData),
       });
 
       const data = await res.text();
 
-      console.log(data);
+      alert("The SignUp has been successful");
       response.innerHTML = data;
     }
   } else {
@@ -61,13 +60,32 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
       alert("Ensure you input a value in both fields!");
     } else {
       // perform operation with form input
-      alert("This form has been successfully submitted!");
-      console.log(
-        `This form has a username of ${username.value} and password of ${password.value}`
-      );
+      const logInData = {
+        username: username.value,
+        password: password.value,
+      };
+
+      const res = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(logInData),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const token = data.accessToken;
+
+        localStorage.setItem("accessToken", token);
+
+        window.location.href = "./weather.html";
+        alert("Successfully logged in");
+      } else {
+        await alert("Invalid username or password");
+      }
+      
     }
   }
-  await document.getElementById("auth-form").reset();
+  document.getElementById("auth-form").reset();
 });
 
 function onSwitch() {
