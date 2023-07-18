@@ -42,18 +42,19 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         role: role.value,
       };
 
-      let response = document.getElementById("response");
-
       const res = await fetch("http://localhost:3000/api/users", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(signUpData),
       });
 
-      const data = await res.text();
-
-      alert("The SignUp has been successful");
-      response.innerHTML = data;
+      const data = await res.json();
+      if (res.ok) {
+        alert("The SignUp has been successful");
+      } else {
+        console.log(data.message);
+        alert(data.message);
+      }
     }
   } else {
     if (username.value == "" || password.value == "") {
@@ -71,8 +72,8 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         body: JSON.stringify(logInData),
       });
 
+      const data = await res.json();
       if (res.ok) {
-        const data = await res.json();
         const token = data.accessToken;
 
         localStorage.setItem("accessToken", token);
@@ -80,9 +81,8 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         window.location.href = "./weather.html";
         alert("Successfully logged in");
       } else {
-        await alert("Invalid username or password");
+        alert(data.message);
       }
-      
     }
   }
   document.getElementById("auth-form").reset();
