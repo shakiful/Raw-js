@@ -1,14 +1,20 @@
 switchMode = false;
 
-role = ["user", "admin", "super", "viewer"];
+// Define variable type
+const roles = ["user", "admin", "super", "viewer"];
+// roles = ["user", "admin", "super", "viewer"];
 
 const selectElement = document.getElementById("my-select");
 
-for (let i = 0; i < role.length; i++) {
+const roleLength = roles.length;
+// 1000;
+
+// for (let i = 0; i < role.length; i++) {
+for (let i = 0; i < roleLength; i++) {
   const option = document.createElement("option");
 
-  option.text = role[i];
-  option.value = role[i];
+  option.text = roles[i];
+  option.value = roles[i];
 
   selectElement.appendChild(option);
 }
@@ -20,50 +26,78 @@ let loginOrSignUpForm = document.getElementById("register");
 loginOrSignUpForm.addEventListener("click", async (e) => {
   e.preventDefault();
 
-  let username = document.getElementById("username");
-  let password = document.getElementById("password");
-  let email = document.getElementById("email");
-  let role = document.getElementById("my-select");
+  // let username = document.getElementById("username");
+  // let password = document.getElementById("password");
+  // let email = document.getElementById("email");
+  // let role = document.getElementById("my-select");
+
+  let username = document.getElementById("username")
+    ? document.getElementById("username").value
+    : null;
+  let password = document.getElementById("password")
+    ? document.getElementById("password").value
+    : null;
+  let email = document.getElementById("email")
+    ? document.getElementById("email").value
+    : null;
+  let role = document.getElementById("my-select")
+    ? document.getElementById("my-select").value
+    : null;
 
   if (this.switchMode) {
-    if (
-      username.value == "" ||
-      password.value == "" ||
-      email.value == "" ||
-      role.value == ""
-    ) {
-      alert("Ensure you input a value in both fields!");
+    if (!username || !password || !email || !role) {
+      alert("Ensure you input value in all fields!");
     } else {
       // perform operation with form input
-      const signUpData = {
-        username: username.value,
-        password: password.value,
-        email: email.value,
-        role: role.value,
-      };
 
-      const res = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signUpData),
-      });
+      if (
+        validateUserName(username) &&
+        validateRole(role) &&
+        validatePassword(password) &&
+        validateEmail(email)
+      ) {
+        const signUpData = {
+          username,
+          password,
+          email,
+          role,
+        };
 
-      const data = await res.json();
-      if (res.ok) {
-        alert("The SignUp has been successful");
+        const res = await fetch("http://localhost:3000/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(signUpData),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert("The SignUp has been successful");
+        } else {
+          console.log(data.message);
+          alert(data.message);
+        }
       } else {
-        console.log(data.message);
-        alert(data.message);
+        if (!validateUserName(username)) {
+          alert('username must be at least 7 characters long.')
+        }
+        if (!validateRole(role)) {
+          alert('please select a valid role')
+        }
+        if (!validatePassword(password)) {
+        }
+        if (!validateEmail(email)) {
+          alert('Please enter a valid email')
+        }
       }
     }
   } else {
-    if (username.value == "" || password.value == "") {
+    if (!username || !password) {
       alert("Ensure you input a value in both fields!");
     } else {
       // perform operation with form input
       const logInData = {
-        username: username.value,
-        password: password.value,
+        username,
+        password,
       };
 
       const res = await fetch("http://localhost:3000/api/auth/login", {
@@ -81,7 +115,7 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         window.location.href = "./weather.html";
         alert("Successfully logged in");
       } else {
-        alert(data.message);
+        alert("Incorrect login credentials");
       }
     }
   }
