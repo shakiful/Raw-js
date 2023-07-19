@@ -4,10 +4,6 @@ switchMode = false;
 const roles = ["user", "admin", "super", "viewer"];
 // roles = ["user", "admin", "super", "viewer"];
 
-function validateRole(role) {
-  return roles.includes(role);
-}
-
 const selectElement = document.getElementById("my-select");
 
 const roleLength = roles.length;
@@ -60,31 +56,38 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         validatePassword(password) &&
         validateEmail(email)
       ) {
+        const signUpData = {
+          username,
+          password,
+          email,
+          role,
+        };
+
+        const res = await fetch("http://localhost:3000/api/users", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(signUpData),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          alert("The SignUp has been successful");
+        } else {
+          console.log(data.message);
+          alert(data.message);
+        }
       } else {
         if (!validateUserName(username)) {
-          alert('Ensure valid user name')
+          alert('username must be at least 7 characters long.')
         }
-      }
-
-      const signUpData = {
-        username,
-        password,
-        email,
-        role,
-      };
-
-      const res = await fetch("http://localhost:3000/api/users", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(signUpData),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        alert("The SignUp has been successful");
-      } else {
-        console.log(data.message);
-        alert(data.message);
+        if (!validateRole(role)) {
+          alert('please select a valid role')
+        }
+        if (!validatePassword(password)) {
+        }
+        if (!validateEmail(email)) {
+          alert('Please enter a valid email')
+        }
       }
     }
   } else {
@@ -112,7 +115,7 @@ loginOrSignUpForm.addEventListener("click", async (e) => {
         window.location.href = "./weather.html";
         alert("Successfully logged in");
       } else {
-        alert(data.message);
+        alert("Incorrect login credentials");
       }
     }
   }
